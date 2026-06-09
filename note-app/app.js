@@ -1,71 +1,63 @@
-import chalk from 'chalk'
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers'
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { getNotes, addNote, removeNote, listNotes, readNotes } from './notes.js';
 
-
-import getNotes from './notes.js'
-
-
-
-// Qeexidda amarka (Command definition)
 yargs(hideBin(process.argv))
-  .command({
-    command: 'add',
-    describe: 'Add a new note',
-    handler(argv) {
-      // Halkan waxaad ku qoraysaa waxa dhacaya marka amarka la bixiyo
-      console.log('Adding a new note!')
-     
-    }
-  })
-  .command({
-    command: 'remove',
-    describe: 'remove a note',
-    handler(argv) {
-      // Halkan waxaad ku qoraysaa waxa dhacaya marka amarka la bixiyo
-      console.log('removeing the note')
-     
-    }
-  })
-  .command({
-    command: 'list',
-    describe: 'list your note',
-    handler(argv){
-        console.log("listing out all notes")
-    }
-  })
-  .command({
-    command:'read',
-    describe:'read a note',
-    builder:{
-        title:{
-            describe:'Note title',
-            demandOption:true,
-            type:'string'
-
+    .command({
+        command: 'add',
+        describe: 'Add a new note',
+        builder: {
+            title: {
+                describe: 'Note title',
+                demandOption: true,
+                type: 'string'
+            },
+            body: {
+                describe: 'Note body',
+                demandOption: true,
+                type: 'string'
+            }
+        },
+        handler(argv) {
+            addNote(argv.title, argv.body);
         }
-    },
-    handler(argv){
-        console.log("Title: "+ argv.title)
-    }
-  })
-
-
-  .parse() // Tani waa muhiim si koodhku u falanqeeyo amarkaaga
-
-
-//   yargs(hideBin(process.argv))
-//   .command({
-//     command: 'add',
-//     describe:'remove a note',
-//     handler(argv){
-//         console.log('removing the note')
-//     }
-
-//   })
-//   .parse()
-
-const argv = yargs(hideBin(process.argv)).parse()
-
-console.log(process.argv)
-console.log(argv)
+    })
+    .command({
+        command: 'remove',
+        describe: 'Remove a note',
+        builder: {
+          title: {
+            describe: 'Note title',
+            demandOption: true,   // Khasab ka dhig ciwaanka note-ka la tirtirayo
+            type: 'string'
+           }
+        
+        },
+        handler(argv) { // <-- SAX: 'argv' hadda waa la dhex dhigay qawska!
+         removeNote(argv.title); // <-- SAX: Kaliya title-ka u baas gareey notes.js
+        }
+    })
+    .command({
+        command: 'list',
+        describe: 'List your notes',
+        handler() {
+            listNotes()
+        }
+    })
+    .command({
+        command: 'read',
+        describe: 'Read a note',
+        builder: {
+            title: {
+                describe: 'Note title',
+                demandOption: true ,
+                tyep: 'string'
+            }
+        },
+        
+        handler(argv) {
+            readNotes(argv.title )
+        }
+    })
+    .parse(); // Xariiqan ayaa muhiim u ah in amarku fulo oo uu console-ka wax ku soo qoro
+    
